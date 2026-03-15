@@ -1,0 +1,304 @@
+{
+  "name": "My workflow 3",
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "cv",
+          "mode": "list",
+          "cachedResultName": "cv"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -272,
+        392
+      ],
+      "id": "d3cb781d-02d5-47ae-ac54-6b7ee93d8b20",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "kI8U5qLU1PqyoSIn",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "embed-english-v3.0"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsCohere",
+      "typeVersion": 1,
+      "position": [
+        -264,
+        616
+      ],
+      "id": "340bec5e-ba2f-4376-8694-158ede7ee229",
+      "name": "Embeddings Cohere",
+      "credentials": {
+        "cohereApi": {
+          "id": "0Ru0VcepCEBtMT3b",
+          "name": "CohereApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        -136,
+        616
+      ],
+      "id": "2c983267-3308-45d7-bb49-1f18e40da4bf",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "formTitle": "File ",
+        "formDescription": "User enter a file",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "input file",
+              "fieldType": "file"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -496,
+        392
+      ],
+      "id": "155bbca4-10f8-4b0c-9584-a8b944787e67",
+      "name": "On form submission",
+      "webhookId": "0b55f01c-8115-4929-87eb-73d253668b83"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "{{ $('When chat message received').item.json.chatInput }}",
+        "options": {
+          "systemMessage": "You are a CV analysis assistant. Answer questions strictly \nbased on the candidate's CV retrieved from the vector database. \n\nIf the information is not in the CV, say: \n\"This information is not mentioned in the CV.\"\n\nBe concise, professional, and structured in your responses"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -216,
+        -352
+      ],
+      "id": "f260c9e6-6f34-43fb-a53f-e9461b166fc4",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -496,
+        -144
+      ],
+      "id": "90397ef9-a3a0-4c66-8406-72bc164fa9da",
+      "name": "When chat message received",
+      "webhookId": "0a438e0c-4409-4a18-ac62-0cb2b8cbfa52"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        -128
+      ],
+      "id": "8af97fcd-a385-4fab-8b5f-fb9babb0630f",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "ibaAr7BfYKAjdW0k",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Use this tool to answer ANY question about the candidate. \nAlways use this tool first before answering. Search for \nskills, experience, education, projects, certifications, \ncontact info, or any other details about the candidate.",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "cv",
+          "mode": "list",
+          "cachedResultName": "cv"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -16,
+        -128
+      ],
+      "id": "f008b591-5bb0-4b6a-8d5f-070f5ee54453",
+      "name": "Pinecone Vector Store1",
+      "credentials": {
+        "pineconeApi": {
+          "id": "kI8U5qLU1PqyoSIn",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "embed-english-v3.0"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsCohere",
+      "typeVersion": 1,
+      "position": [
+        64,
+        80
+      ],
+      "id": "ce9796b6-046f-4ece-bc24-c0c1e43e5f38",
+      "name": "Embeddings Cohere1",
+      "credentials": {
+        "cohereApi": {
+          "id": "0Ru0VcepCEBtMT3b",
+          "name": "CohereApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "sessionId",
+        "contextWindowLength": 3
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -144,
+        -128
+      ],
+      "id": "11801220-48c6-4b1a-aae1-f740de745de7",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Embeddings Cohere": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Cohere1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "fcaa6d49-864a-49b6-bbfc-764603a0318d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "eaedfbf7a9476cefb049cd62c43b7eca2d61be09ede9a990a16ceb1ff1e20fe5"
+  },
+  "id": "5iGMEg5yxSZDJfQJ",
+  "tags": []
+}
